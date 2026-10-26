@@ -1,0 +1,101 @@
+# Cody — memecoin trading desk
+# Every limit here is validated on load. A bad config fails before any order.
+
+risk:
+  risk_per_trade_pct: 0.02      # fixed fraction of CURRENT book, per trade
+  max_position_pct: 0.05        # concentration cap
+  max_gross_exposure_pct: 0.60
+  max_liquidity_frac: 0.01      # never take >1% of pool liquidity
+
+  # contract gates: reject the order, do not merely lower the score
+  max_top10_holder_pct: 0.25
+  min_liquidity_usd: 25000
+  require_mint_authority_revoked: true
+  require_lp_locked: true
+  reject_honeypot: true
+  max_token_age_s: 3600
+
+  max_feed_lag_s: 5
+
+  max_chase_pct: 0.15           # Spy: skip copies >15% above leader entry
+  max_allocation_per_wallet_pct: 0.10
+  wallet_demote_after_losses: 3
+
+  stop_loss_pct: 0.25
+  take_profit_pct: 0.60
+  trailing_stop_pct: 0.20
+  max_hold_s: 3600
+
+  safety_factor: 2.0            # never run at the rated limit
+
+  consecutive_loss_limit: 3
+  consecutive_loss_cooldown_s: 900
+  drawdown_halt_pct: 0.20
+  daily_loss_halt_pct: 0.10
+  liquidity_drop_pct: 0.40
+  liquidity_drop_window_s: 120
+
+gambler:
+  enabled: true
+  capital_pct: 0.40
+  launch_window_s: 1800
+  min_score: 0.55
+  min_buy_pressure: 0.55
+  min_volume_surge: 1.5
+  min_change_5m: 0.03
+
+house:
+  enabled: true
+  capital_pct: 0.20
+  fee_rate: 0.02
+  deploy_cost_usd: 1.5
+  seed_liquidity_usd: 200
+  gas_cost_usd: 0.75
+  expected_volume_per_token_usd: 18000
+  max_launches_per_day: 6
+  max_open_launches: 6
+  min_fee_cover_ratio: 2.0
+  min_edge_multiple: 1.15
+  launch_cooldown_s: 1800
+  fee_horizon_s: 86400
+  min_market_volume_5m_usd: 5000
+  dead_launch_prob: 0.40
+  dead_volume_frac: 0.03
+  live_volume_median_frac: 0.50
+  live_volume_sigma: 0.9
+  volume_cap_mult: 8.0
+  dead_seed_loss_lo: 0.20
+  dead_seed_loss_hi: 0.50
+  live_seed_loss_lo: 0.00
+  live_seed_loss_hi: 0.08
+  fee_stop_window: 8
+  fee_stop_cooldown_s: 21600
+
+spy:
+  enabled: true
+  capital_pct: 0.40
+  min_wallet_score: 0.35
+  top_n_wallets: 5
+  copy_latency_s: 12
+  mirror_exits: true
+
+execution:
+  taker_fee_bps: 50
+  base_slippage_bps: 40
+  impact_coeff: 2.0
+  latency_s: 1.0
+
+backtest:
+  start_equity_usd: 10000
+  days: 30
+  step_s: 60
+  seed: 7
+  tokens_per_day: 12
+  output_dir: outputs
+
+live:
+  rpc_url: ""
+  wallet_private_key_env: CODY_WALLET_KEY
+  max_order_usd: 250
+  dry_run: true
+  require_confirm: true
